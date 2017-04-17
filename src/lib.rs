@@ -6,27 +6,35 @@
 // Created on: 17 Apr 2017 12:45:39 +0200 (CEST)
 //
 
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 use std::hash::Hash;
 use std::cmp::{Eq, PartialEq};
 
 #[derive(Debug)]
 pub struct ActionPlanner<A, C>
-where A: Hash + Eq + PartialEq {
+where A: Hash + Eq + PartialEq,
+      C: Hash + Eq + PartialEq {
   actions: HashMap<A, (Vec<C>, Vec<C>)>,
+  states: HashSet<C>,
 }
 
 impl<A, C> ActionPlanner<A, C>
-where A: Hash + Eq + PartialEq {
+where A: Hash + Eq + PartialEq,
+      C: Hash + Eq + PartialEq {
   pub fn new() -> ActionPlanner<A, C> {
     ActionPlanner {
       actions: HashMap::new(),
+      states: HashSet::new(),
     }
   }
 
   pub fn add_action(&mut self, action: A, preconditions: Vec<C>, effects: Vec<C>) {
     self.actions.insert(action, (preconditions, effects));
+  }
+
+  pub fn set_state(&mut self, state: C) {
+    self.states.insert(state);
   }
 
   pub fn display_actions(&self)

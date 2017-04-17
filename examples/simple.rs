@@ -14,7 +14,7 @@ enum Action {
   Flee,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Hash, Eq, PartialEq)]
 enum Condition {
   HasWeapon(bool),
   NearEnemy(bool),
@@ -32,9 +32,12 @@ fn main() {
 
   ap.add_action(
     Action::Flee,
-    vec!(Condition::EnemyVisible(true)),
+    vec!(Condition::HasWeapon(false)),
     vec!(Condition::NearEnemy(false))
   );
+
+  ap.set_state(Condition::NearEnemy(true));
+  ap.set_state(Condition::HasWeapon(true));
 
   ap.display_actions();
 }
