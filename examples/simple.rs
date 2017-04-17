@@ -12,6 +12,7 @@ extern crate goap;
 enum Action {
   Attack,
   Flee,
+  Explode,
 }
 
 #[derive(Debug, Hash, Eq, PartialEq)]
@@ -27,13 +28,22 @@ fn main() {
   ap.add_action(
     Action::Attack,
     vec!(Condition::HasWeapon(true), Condition::NearEnemy(true)),
-    vec!(Condition::EnemyAlive(false))
+    vec!(Condition::EnemyAlive(false)),
+    10
   );
 
   ap.add_action(
     Action::Flee,
     vec!(Condition::HasWeapon(false)),
-    vec!(Condition::NearEnemy(false))
+    vec!(Condition::NearEnemy(false)),
+    10
+  );
+
+  ap.add_action(
+    Action::Explode,
+    vec!(Condition::NearEnemy(true)),
+    vec!(Condition::EnemyAlive(false)),
+    100
   );
 
   ap.set_state(Condition::NearEnemy(true));

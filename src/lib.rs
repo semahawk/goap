@@ -15,7 +15,7 @@ use std::cmp::{Eq, PartialEq};
 pub struct ActionPlanner<A, C>
 where A: Hash + Eq + PartialEq,
       C: Hash + Eq + PartialEq {
-  actions: HashMap<A, (Vec<C>, Vec<C>)>,
+  actions: HashMap<A, (Vec<C>, Vec<C>, usize)>,
   states: HashSet<C>,
   goals: HashSet<C>,
 }
@@ -31,8 +31,8 @@ where A: Hash + Eq + PartialEq,
     }
   }
 
-  pub fn add_action(&mut self, action: A, preconditions: Vec<C>, effects: Vec<C>) {
-    self.actions.insert(action, (preconditions, effects));
+  pub fn add_action(&mut self, action: A, preconditions: Vec<C>, effects: Vec<C>, cost: usize) {
+    self.actions.insert(action, (preconditions, effects, cost));
   }
 
   pub fn set_state(&mut self, state: C) {
