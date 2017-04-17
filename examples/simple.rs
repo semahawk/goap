@@ -39,6 +39,8 @@ fn main() {
   ap.set_state(Condition::NearEnemy(true));
   ap.set_state(Condition::HasWeapon(true));
 
+  ap.set_goal(Condition::EnemyAlive(false));
+
   ap.display_actions();
 }
 

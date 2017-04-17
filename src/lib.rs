@@ -17,6 +17,7 @@ where A: Hash + Eq + PartialEq,
       C: Hash + Eq + PartialEq {
   actions: HashMap<A, (Vec<C>, Vec<C>)>,
   states: HashSet<C>,
+  goals: HashSet<C>,
 }
 
 impl<A, C> ActionPlanner<A, C>
@@ -26,6 +27,7 @@ where A: Hash + Eq + PartialEq,
     ActionPlanner {
       actions: HashMap::new(),
       states: HashSet::new(),
+      goals: HashSet::new(),
     }
   }
 
@@ -35,6 +37,10 @@ where A: Hash + Eq + PartialEq,
 
   pub fn set_state(&mut self, state: C) {
     self.states.insert(state);
+  }
+
+  pub fn set_goal(&mut self, goal: C) {
+    self.goals.insert(goal);
   }
 
   pub fn display_actions(&self)
