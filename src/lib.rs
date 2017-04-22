@@ -112,21 +112,16 @@ where A: Hash + Eq + PartialEq + Clone,
     }
 
     let mut last_step: Option<Box<Node<A, C>>> = None;
-    //let mut came_from: HashMap<BTreeMap<C, bool>, Option<Node<A, C>>> = HashMap::new();
     let mut cost_so_far: HashMap<BTreeMap<C, bool>, usize> = HashMap::new();
 
     let mut frontier = BinaryHeap::new();
 
-    //came_from.insert(self.states.clone(), None);
     cost_so_far.insert(self.states.clone(), 0);
     frontier.push(Node { action: None, states: self.states.clone(), cost: 0, parent: None });
 
     'find_plan: while let Some(current_node) = frontier.pop() {
-      println!("-- popped node from the frontier: {:?}", current_node);
 
       'find_action: for (action, &(ref preconds, ref effects, cost)) in &self.actions {
-        //println!("current_node.states: {:?}", current_node.states);
-        //println!("---- checking action {:?} ({:?} -> {:?})", action, preconds, effects);
         for precond in preconds {
           match current_node.states.get(precond.0) {
             Some(state) => {
@@ -136,9 +131,6 @@ where A: Hash + Eq + PartialEq + Clone,
           }
         }
 
-        println!("------ {:?} ({:?} -> {:?}) fulfills all preconditions!", action, preconds, effects);
-
-        //println!("current_node.states vs the goal: {:?} vs {:?}", current_node.states, self.goal);
         {
           let mut goal_found = true;
           for (state, value) in &self.goal {
@@ -155,15 +147,12 @@ where A: Hash + Eq + PartialEq + Clone,
           }
 
           if goal_found {
-            println!("FOUND THE GOAL!");
             last_step = Some(Box::new(current_node));
             break 'find_plan;
           }
         }
 
         let new_cost = cost_so_far.get(&current_node.states).unwrap() + cost;
-        println!("cost_so_far: {:?}", cost_so_far);
-        println!("new_cost: {:?}", new_cost);
         if !cost_so_far.contains_key(&preconds) || new_cost < *cost_so_far.get(&preconds).unwrap() {
           let mut new_state = current_node.states.clone();
           for (effect, value) in effects {
@@ -171,7 +160,6 @@ where A: Hash + Eq + PartialEq + Clone,
           }
           cost_so_far.insert(new_state.clone(), new_cost);
           let new_node = Node { action: Some(action.clone()), states: new_state.clone(), cost: new_cost + approx_distance_to(&new_state, &self.goal), parent: Some(Box::new(current_node.clone())) };
-          println!("-- pushing onto the frontier: {:?}", new_node);
           frontier.push(new_node);
         }
       }
