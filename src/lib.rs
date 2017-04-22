@@ -6,7 +6,7 @@
 // Created on: 17 Apr 2017 12:45:39 +0200 (CEST)
 //
 
-use std::collections::{HashMap, HashSet, BinaryHeap, BTreeMap};
+use std::collections::{HashMap, BinaryHeap, BTreeMap};
 
 use std::hash::Hash;
 use std::cmp::{Ordering, Eq, PartialEq};
