@@ -62,10 +62,27 @@ where A: Hash + Eq + PartialEq + Clone,
     println!("===");
     let mut plan: Vec<A> = Vec::new();
 
+    /*
+     * The more states are not contained in <from> (or have invalid values) the bigger the distance
+     * is */
     fn approx_distance_to<C>(from: &BTreeMap<C, bool>, goal: &BTreeMap<C, bool>) -> usize
     where C: std::cmp::Ord + std::fmt::Debug {
-      //goal.difference(from).count()
-      10
+      let mut dist = 0;
+
+      for (state, value) in goal.iter() {
+        match from.get(&state) {
+          Some(v) => {
+            if v != value {
+              dist += 10;
+            }
+          },
+          None => {
+            dist += 10;
+          },
+        }
+      }
+
+      dist
     }
 
     #[derive(Debug, Clone, Eq, PartialEq)]
@@ -105,7 +122,7 @@ where A: Hash + Eq + PartialEq + Clone,
     frontier.push(Node { action: None, states: self.states.clone(), cost: 0, parent: None });
 
     'find_plan: while let Some(current_node) = frontier.pop() {
-      //println!("-- popped node from the frontier: {:?}", current_node);
+      println!("-- popped node from the frontier: {:?}", current_node);
 
       'find_action: for (action, &(ref preconds, ref effects, cost)) in &self.actions {
         //println!("current_node.states: {:?}", current_node.states);
@@ -119,7 +136,7 @@ where A: Hash + Eq + PartialEq + Clone,
           }
         }
 
-        //println!("------ {:?} ({:?} -> {:?}) fulfills all preconditions!", action, preconds, effects);
+        println!("------ {:?} ({:?} -> {:?}) fulfills all preconditions!", action, preconds, effects);
 
         //println!("current_node.states vs the goal: {:?} vs {:?}", current_node.states, self.goal);
         {
@@ -145,13 +162,16 @@ where A: Hash + Eq + PartialEq + Clone,
         }
 
         let new_cost = cost_so_far.get(&current_node.states).unwrap() + cost;
+        println!("cost_so_far: {:?}", cost_so_far);
+        println!("new_cost: {:?}", new_cost);
         if !cost_so_far.contains_key(&preconds) || new_cost < *cost_so_far.get(&preconds).unwrap() {
           let mut new_state = current_node.states.clone();
           for (effect, value) in effects {
             new_state.insert(effect.clone(), *value);
           }
           cost_so_far.insert(new_state.clone(), new_cost);
-          let new_node = Node { action: Some(action.clone()), states: new_state, cost: new_cost + approx_distance_to(effects, &self.goal), parent: Some(Box::new(current_node.clone())) };
+          let new_node = Node { action: Some(action.clone()), states: new_state.clone(), cost: new_cost + approx_distance_to(&new_state, &self.goal), parent: Some(Box::new(current_node.clone())) };
+          println!("-- pushing onto the frontier: {:?}", new_node);
           frontier.push(new_node);
         }
       }

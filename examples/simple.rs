@@ -31,7 +31,7 @@ fn main() {
     Action::Explode,
     vec!((Condition::NearEnemy, true)),
     vec!((Condition::EnemyAlive, false)),
-    100
+    11
   );
 
   ap.add_action(
@@ -63,7 +63,7 @@ fn main() {
   );
 
   ap.set_state((Condition::NearEnemy, true));
-  ap.set_state((Condition::HasWeapon, false));
+  ap.set_state((Condition::HasWeapon, true));
   ap.set_state((Condition::EnemyAlive, true));
 
   ap.set_goal((Condition::EnemyAlive, false));
