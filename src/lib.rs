@@ -165,6 +165,10 @@ where A: Hash + Eq + PartialEq + Clone,
       }
     }
 
+    if last_step.is_none() {
+      return plan;
+    }
+
     let mut node = last_step.unwrap();
     loop {
       let action = node.clone().action;
