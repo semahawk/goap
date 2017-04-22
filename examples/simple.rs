@@ -8,7 +8,7 @@
 
 extern crate goap;
 
-#[derive(Debug, Hash, Eq, PartialEq)]
+#[derive(Debug, Hash, Eq, PartialEq, Clone)]
 enum Action {
   Attack,
   Flee,
@@ -19,9 +19,9 @@ enum Action {
 
 #[derive(Debug, Hash, Eq, PartialEq, Clone, Ord, PartialOrd)]
 enum Condition {
-  HasWeapon(bool),
-  NearEnemy(bool),
-  EnemyAlive(bool),
+  HasWeapon,
+  NearEnemy,
+  EnemyAlive,
 }
 
 fn main() {
@@ -29,48 +29,48 @@ fn main() {
 
   ap.add_action(
     Action::Explode,
-    vec!(Condition::NearEnemy(true)),
-    vec!(Condition::EnemyAlive(false)),
+    vec!((Condition::NearEnemy, true)),
+    vec!((Condition::EnemyAlive, false)),
     100
   );
 
   ap.add_action(
     Action::Attack,
-    vec!(Condition::HasWeapon(true), Condition::NearEnemy(true)),
-    vec!(Condition::EnemyAlive(false)),
+    vec!((Condition::HasWeapon, true), (Condition::NearEnemy, true)),
+    vec!((Condition::EnemyAlive, false)),
     10
   );
 
   ap.add_action(
     Action::Flee,
-    vec!(Condition::HasWeapon(false), Condition::NearEnemy(true)),
-    vec!(Condition::NearEnemy(false)),
+    vec!((Condition::HasWeapon, false), (Condition::NearEnemy, true)),
+    vec!((Condition::NearEnemy, false)),
     10
   );
 
   ap.add_action(
     Action::FindWeapon,
-    vec!(Condition::HasWeapon(false), Condition::NearEnemy(false)),
-    vec!(Condition::HasWeapon(true)),
+    vec!((Condition::HasWeapon, false), (Condition::NearEnemy, false)),
+    vec!((Condition::HasWeapon, true)),
     10
   );
 
   ap.add_action(
     Action::Approach,
-    vec!(Condition::HasWeapon(true)),
-    vec!(Condition::NearEnemy(true)),
+    vec!((Condition::HasWeapon, true)),
+    vec!((Condition::NearEnemy, true)),
     10
   );
 
-  ap.set_state(Condition::NearEnemy(true));
-  ap.set_state(Condition::HasWeapon(true));
-  ap.set_state(Condition::EnemyAlive(true));
+  ap.set_state((Condition::NearEnemy, true));
+  ap.set_state((Condition::HasWeapon, false));
+  ap.set_state((Condition::EnemyAlive, true));
 
-  ap.set_goal(Condition::EnemyAlive(false));
+  ap.set_goal((Condition::EnemyAlive, false));
 
   ap.display_actions();
 
-  println!("next step: {:?}", ap.plan_next_step());
+  println!("action plan: {:?}", ap.plan());
 }
 
 /*
