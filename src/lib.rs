@@ -57,9 +57,6 @@ where A: Hash + Eq + PartialEq + Clone,
 
   pub fn plan(&mut self) -> Vec<A>
   where A: std::fmt::Debug, C: std::fmt::Debug {
-    println!("===");
-    println!("=== finding a way to {:?}", self.goal);
-    println!("===");
     let mut plan: Vec<A> = Vec::new();
 
     /*
